@@ -9,7 +9,7 @@ namespace NexPay.Payment.Api.Service
         /// </summary>
         /// <param name="request">Submit contract request object.</param>
         /// <returns>A contract id string.</returns>
-        Task<string> SubmitContact(SubmitContractRequest request);
+        Task<string> SubmitContact(SubmitContractRequest request, string userEmail);
 
         /// <summary>
         /// A service method to update the status of the contract.
@@ -25,5 +25,18 @@ namespace NexPay.Payment.Api.Service
         /// <param name="contractId">Contract id.</param>
         /// <returns>Delete status of the contract.</returns>
         Task<bool> DeleteContractByContractId(string contractId);
+
+        /// <summary>
+        /// A method that will return list of existing contracts in the system.
+        /// </summary>
+        /// <returns>List of contracts.</returns>
+        Task<List<Contract>> GetContractsList();
+
+        /// <summary>
+        /// A method that will return list of existing contracts filter by UserId.
+        /// </summary>
+        /// <param name="userId">Unique user Id.</param>
+        /// <returns>List of filtered contracts.</returns>
+        Task<List<Contract>> GetContractsListByUserEmail(string userEmail);
     }
 }

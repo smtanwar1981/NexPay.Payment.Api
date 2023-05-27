@@ -3,6 +3,11 @@
     public class SubmitContractRequest
     {
         /// <summary>
+        /// Gets or sets ContractId.
+        /// </summary>
+        public string? ContractId { get; set; }
+
+        /// <summary>
         /// Gets or sets FromCurrencyCode.
         /// </summary>
         public string? FromCurrencyCode { get; set; }
@@ -21,5 +26,20 @@
         /// Gets or sets InitialAmount.
         /// </summary>
         public decimal? InitialAmount { get; set; }
+
+        /// <summary>
+        /// Gets or sets FinalAmount.
+        /// </summary>
+        public decimal? FinalAmount { get; set; }
+
+        /// <summary>
+        /// Gets or sets UserEmail.
+        /// </summary>
+        public string? UserEmail { get; set; }
+
+        /// <summary>
+        /// Gets or sets ContractStatus.
+        /// </summary>
+        public string? ContractStatus { get; set; }
     }
 }

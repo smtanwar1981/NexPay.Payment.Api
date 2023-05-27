@@ -40,3 +40,7 @@ C:\tuts\NexPay\NexPay.Payment.Api\NexPay.Payment.Api\bin\Debug\net6.0\Microsoft.
 C:\tuts\NexPay\NexPay.Payment.Api\NexPay.Payment.Api\bin\Debug\net6.0\Microsoft.Extensions.Logging.Abstractions.dll
 C:\tuts\NexPay\NexPay.Payment.Api\NexPay.Payment.Api\bin\Debug\net6.0\Microsoft.Extensions.Options.dll
 C:\tuts\NexPay\NexPay.Payment.Api\NexPay.Payment.Api\bin\Debug\net6.0\Microsoft.Extensions.Primitives.dll
+C:\tuts\NexPay\NexPay.Payment.Api\NexPay.Payment.Api\bin\Debug\net6.0\Newtonsoft.Json.dll
+C:\tuts\NexPay\NexPay.Payment.Api\NexPay.Payment.Api\bin\Debug\net6.0\RabbitMQ.Client.dll
+C:\tuts\NexPay\NexPay.Payment.Api\NexPay.Payment.Api\bin\Debug\net6.0\NexPay.Publisher.dll
+C:\tuts\NexPay\NexPay.Payment.Api\NexPay.Payment.Api\bin\Debug\net6.0\NexPay.Publisher.pdb

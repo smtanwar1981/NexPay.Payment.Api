@@ -1,0 +1,12 @@
+C:\tuts\NexPay\NexPay.Payment.Api\NexPay.Publisher\bin\Debug\net6.0\NexPay.Publisher.deps.json
+C:\tuts\NexPay\NexPay.Payment.Api\NexPay.Publisher\bin\Debug\net6.0\NexPay.Publisher.dll
+C:\tuts\NexPay\NexPay.Payment.Api\NexPay.Publisher\bin\Debug\net6.0\NexPay.Publisher.pdb
+C:\tuts\NexPay\NexPay.Payment.Api\NexPay.Publisher\obj\Debug\net6.0\NexPay.Publisher.csproj.AssemblyReference.cache
+C:\tuts\NexPay\NexPay.Payment.Api\NexPay.Publisher\obj\Debug\net6.0\NexPay.Publisher.GeneratedMSBuildEditorConfig.editorconfig
+C:\tuts\NexPay\NexPay.Payment.Api\NexPay.Publisher\obj\Debug\net6.0\NexPay.Publisher.AssemblyInfoInputs.cache
+C:\tuts\NexPay\NexPay.Payment.Api\NexPay.Publisher\obj\Debug\net6.0\NexPay.Publisher.AssemblyInfo.cs
+C:\tuts\NexPay\NexPay.Payment.Api\NexPay.Publisher\obj\Debug\net6.0\NexPay.Publisher.csproj.CoreCompileInputs.cache
+C:\tuts\NexPay\NexPay.Payment.Api\NexPay.Publisher\obj\Debug\net6.0\NexPay.Publisher.dll
+C:\tuts\NexPay\NexPay.Payment.Api\NexPay.Publisher\obj\Debug\net6.0\refint\NexPay.Publisher.dll
+C:\tuts\NexPay\NexPay.Payment.Api\NexPay.Publisher\obj\Debug\net6.0\NexPay.Publisher.pdb
+C:\tuts\NexPay\NexPay.Payment.Api\NexPay.Publisher\obj\Debug\net6.0\ref\NexPay.Publisher.dll

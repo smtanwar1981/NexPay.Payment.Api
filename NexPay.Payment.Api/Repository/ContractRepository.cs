@@ -11,29 +11,34 @@ namespace NexPay.Payment.Api.Repository
         {
             using (var context = new InMemoryDbContext())
             {
-                var contracts = new List<Contract>
-                { 
-                    new Contract { 
-                        ContractId = Guid.NewGuid().ToString(), 
-                        ContractStatus = Constants.ContractStatusNew, 
-                        ConversionRate = Convert.ToDecimal(0.66), 
-                        FromCurrencyCode = Constants.AUDCurrencyCode, 
-                        ToCurrencyCode = Constants.USDCurrencyCode, 
-                        InitialAmount = 100, 
-                        FinalAmount = Convert.ToDecimal(100 * 0.66) 
-                    },
-                    new Contract {
-                        ContractId = Guid.NewGuid().ToString(),
-                        ContractStatus = Constants.ContractStatusPending,
-                        ConversionRate = Convert.ToDecimal(1.50),
-                        FromCurrencyCode = Constants.USDCurrencyCode,
-                        ToCurrencyCode = Constants.AUDCurrencyCode,
-                        InitialAmount = 100,
-                        FinalAmount = Convert.ToDecimal(100 * 1.50)
-                    }
-                };
-                context.Contracts?.AddRange(contracts);
-                context.SaveChanges();
+                if (context.Contracts.Count() < 1)
+                {
+                    var contracts = new List<Contract>
+                    {
+                        new Contract {
+                            ContractId = Guid.NewGuid().ToString(),
+                            ContractStatus = Constants.ContractStatusNew,
+                            ConversionRate = Convert.ToDecimal(0.66),
+                            FromCurrencyCode = Constants.AUDCurrencyCode,
+                            ToCurrencyCode = Constants.USDCurrencyCode,
+                            InitialAmount = 100,
+                            FinalAmount = Convert.ToDecimal(100 * 0.66),
+                            UserEmail = "smtanwar@gmail.com",
+                        },
+                        new Contract {
+                            ContractId = Guid.NewGuid().ToString(),
+                            ContractStatus = Constants.ContractStatusPending,
+                            ConversionRate = Convert.ToDecimal(1.50),
+                            FromCurrencyCode = Constants.USDCurrencyCode,
+                            ToCurrencyCode = Constants.AUDCurrencyCode,
+                            InitialAmount = 100,
+                            FinalAmount = Convert.ToDecimal(100 * 1.50),
+                            UserEmail= "smtanwar@gmail.com",
+                        }
+                    };
+                    context.Contracts?.AddRange(contracts);
+                    context.SaveChanges();
+                }
             }
         }
 
@@ -41,14 +46,15 @@ namespace NexPay.Payment.Api.Repository
         public async Task<string> AddContract(SubmitContractRequest request)
         {
             var newContract = new Contract
-            { 
+            {
                 ContractId = Guid.NewGuid().ToString(),
                 ContractStatus = Constants.ContractStatusNew,
                 ConversionRate = request.ConversionRate,
                 FromCurrencyCode = request.FromCurrencyCode,
                 ToCurrencyCode = request.ToCurrencyCode,
                 InitialAmount = request.InitialAmount,
-                FinalAmount = Convert.ToDecimal(request.InitialAmount * request.ConversionRate)
+                FinalAmount = Convert.ToDecimal(request.InitialAmount * request.ConversionRate),
+                UserEmail = request.UserEmail
             };
             using (var context = new InMemoryDbContext())
             {
@@ -57,6 +63,30 @@ namespace NexPay.Payment.Api.Repository
             };
             return newContract.ContractId;
         }
+
+        /// <inheritdoc />
+        public async Task<List<Contract>> GetContractsList()
+        {
+            List<Contract> contracts = new List<Contract>();
+            using (var context = new InMemoryDbContext())
+            {
+                contracts = await context.Contracts.ToListAsync();
+            }
+            return contracts;
+        }
+
+        /// <inheritdoc />
+        public async Task<List<Contract>> GetContractsByUserEmail(string userEmail)
+        {
+            List<Contract> contracts = new List<Contract>();
+            using (var context = new InMemoryDbContext())
+            {
+                contracts = await context.Contracts.ToListAsync();
+                contracts = contracts.Where(x => x.UserEmail == userEmail).ToList();
+            }
+            return contracts;
+        }
+
 
         /// <inheritdoc />
         public async Task<Contract> FindContractByContractId(string contractId)
@@ -70,21 +100,23 @@ namespace NexPay.Payment.Api.Repository
         }
 
         /// <inheritdoc />
-        public async Task<bool> UpdateContractStatus(Contract contract)
+        public async Task<Contract> UpdateContractStatus(Contract contract)
         {
             bool updateStatus = false;
+            Contract updatedContract = null;
             using (var context = new InMemoryDbContext())
             {
                 context.Contracts?.Update(contract);
                 await context.SaveChangesAsync();
+                updatedContract = context.Contracts?.Where(x => string.Equals(x.ContractId, contract.ContractId, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
                 updateStatus = true;
             }
-            return updateStatus;
+            return updatedContract;
         }
 
         /// <inheritdoc />
         public async Task<bool> DeleteContract(Contract contract)
-        { 
+        {
             bool deleteStatus = false;
             using (var context = new InMemoryDbContext())
             {

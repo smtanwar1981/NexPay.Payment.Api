@@ -23,7 +23,7 @@ namespace NexPay.Payment.Api.Repository
         /// </summary>
         /// <param name="contract">A contract object to update.</param>
         /// <returns>boolean value true if status update or false if status not updated.</returns>
-        Task<bool> UpdateContractStatus(Contract contract);
+        Task<Contract> UpdateContractStatus(Contract contract);
 
         /// <summary>
         /// To delete an existing contract.
@@ -31,5 +31,18 @@ namespace NexPay.Payment.Api.Repository
         /// <param name="contract">A contract object to delete.</param>
         /// <returns>A delete status true if deleted and false if not deleted.</returns>
         Task<bool> DeleteContract(Contract contract);
+
+        /// <summary>
+        /// To get list of existing contract.
+        /// </summary>
+        /// <returns>List of contracts.</returns>
+        Task<List<Contract>> GetContractsList();
+
+        /// <summary>
+        /// To get list of existing contracts filter by UserId.
+        /// </summary>
+        /// <param name="userEmail">Unique userEmail.</param>
+        /// <returns>Filtered list of contracts.</returns>
+        Task<List<Contract>> GetContractsByUserEmail(string userEmail);
     }
 }

@@ -1,7 +1,9 @@
-﻿namespace NexPay.Payment.Api.Service
+﻿using NexPay.Payment.Api.Model;
+
+namespace NexPay.Payment.Api.Service
 {
     public interface ILoginApiProxyService
     {
-        public Task<bool> AuthenticateRequest(string token);
+        public Task<UserAuthenicationResponse> AuthenticateRequest(string token);
     }
 }

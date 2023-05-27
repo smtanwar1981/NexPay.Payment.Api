@@ -1,6 +1,8 @@
 ﻿using NexPay.Payment.Api.Common;
 using NexPay.Payment.Api.Model;
 using NexPay.Payment.Api.Repository;
+using NexPay.Publisher.Common;
+using NexPay.Publisher.Service;
 
 namespace NexPay.Payment.Api.Service
 {
@@ -8,14 +10,16 @@ namespace NexPay.Payment.Api.Service
     {
         private readonly ILogger<ContractService> _logger;
         private readonly IContractRepository _contractRepository;
-        public ContractService(ILogger<ContractService> logger, IContractRepository contractReposiroty)
+        private readonly IMessagePublisher _messagePublisher;
+        public ContractService(ILogger<ContractService> logger, IContractRepository contractReposiroty, IMessagePublisher messagePublisher)
         {
             _logger = logger;
             _contractRepository = contractReposiroty;
+            _messagePublisher = messagePublisher;
         }
 
         /// <inheritdoc />
-        public async Task<string> SubmitContact(SubmitContractRequest request)
+        public async Task<string> SubmitContact(SubmitContractRequest request, string userEmail)
         {
             _logger.LogInformation($"Begin Executing SubmitContract() method of {nameof(ContractService)} class.");
 
@@ -43,8 +47,8 @@ namespace NexPay.Payment.Api.Service
             string contractId = await _contractRepository.AddContract(request);
 
             if (!string.IsNullOrEmpty(contractId))
-            { 
-                /// TBD: Send Email to receipient and Admin
+            {
+                _messagePublisher.PublishMessage(GetContractSubmissionMessageToPublish(request, contractId, userEmail));
             }
             _logger.LogInformation($"Finish Executing SubmitContract() method of {nameof(ContractService)} class.");
 
@@ -56,6 +60,7 @@ namespace NexPay.Payment.Api.Service
         {
             _logger.LogInformation($"Begin Executing UpdateContractStatus() method of {nameof(ContractService)} class.");
 
+            Contract updatedContract = null;
             bool updateContractStatus = false;
 
             if (string.IsNullOrEmpty(contractId))
@@ -77,11 +82,12 @@ namespace NexPay.Payment.Api.Service
                 throw new ArgumentException($"No contract with this contract id - {contractId} found in the system");
             }
             contract.ContractStatus = contractStatus;
-            updateContractStatus = await _contractRepository.UpdateContractStatus(contract);
+            updatedContract = await _contractRepository.UpdateContractStatus(contract);
 
-            if (updateContractStatus)
+            if (updatedContract != null)
             {
-                /// TBD: Send Email to receipient and Admin
+                updateContractStatus = true;
+                _messagePublisher.PublishMessage(GetContractStatusChangeMessageToPublish(updatedContract));
             }
 
             _logger.LogInformation($"Finish Executing UpdateContractStatus() method of {nameof(ContractService)} class.");
@@ -114,6 +120,36 @@ namespace NexPay.Payment.Api.Service
             return deleteContractStatus;
         }
 
+        /// <inheritdoc />
+        public async Task<List<Contract>> GetContractsListByUserEmail(string userEmail)
+        {
+            _logger.LogInformation($"Begin Executing GetContractsList() method of {nameof(ContractService)} class.");
+
+            var contract = await _contractRepository.GetContractsByUserEmail(userEmail);
+            if (contract == null)
+            {
+                throw new Exception($"No contract found in the system");
+            }
+
+            _logger.LogInformation($"Finish Executing GetContractsList() method of {nameof(ContractService)} class.");
+            return contract;
+        }
+
+        /// <inheritdoc />
+        public async Task<List<Contract>> GetContractsList() 
+        {
+            _logger.LogInformation($"Begin Executing GetContractsList() method of {nameof(ContractService)} class.");
+
+            var contract = await _contractRepository.GetContractsList();
+            if (contract == null)
+            {
+                throw new Exception($"No contract found in the system");
+            }
+
+            _logger.LogInformation($"Finish Executing GetContractsList() method of {nameof(ContractService)} class.");
+            return contract;
+        }
+
         private bool isContractStatusValid(string contractStatus)
         {
             bool isValidContractStatus = false;
@@ -126,6 +162,38 @@ namespace NexPay.Payment.Api.Service
                 case Constants.ContractStatusRejected: isValidContractStatus = true; break ;
             }
             return isValidContractStatus;
+        }
+
+        private SubmitContractMessagePayload GetContractSubmissionMessageToPublish(SubmitContractRequest request, string contractId, string userEmail)
+        {
+            return new SubmitContractMessagePayload
+            { 
+                PayloadId = Guid.NewGuid().ToString(),
+                ContractId = contractId,
+                UserEmail = userEmail,
+                FromCurrencyCode = request.FromCurrencyCode,
+                ToCurrencyCode = request.ToCurrencyCode,
+                ConversionRate = request.ConversionRate,
+                InitialAmount = request.InitialAmount,
+                FinalAmount = request.FinalAmount,
+                ContractStatus = request.ContractStatus,
+            };
+        }
+
+        private SubmitContractMessagePayload GetContractStatusChangeMessageToPublish(Contract contract)
+        {
+            return new SubmitContractMessagePayload
+            {
+                PayloadId = Guid.NewGuid().ToString(),
+                ContractId = contract.ContractId,
+                UserEmail = contract.UserEmail,
+                FromCurrencyCode = contract.FromCurrencyCode,
+                ToCurrencyCode = contract.ToCurrencyCode,
+                ConversionRate = contract.ConversionRate,
+                InitialAmount = contract.InitialAmount,
+                FinalAmount = contract.FinalAmount,
+                ContractStatus = contract.ContractStatus,
+            };
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace NexPay.Payment.Api.Service
+﻿using NexPay.Payment.Api.Model;
+
+namespace NexPay.Payment.Api.Service
 {
     public class LoginApiProxyService : ILoginApiProxyService
     {
@@ -8,7 +10,7 @@
             _configuration = configuration;
         }
 
-        public async Task<bool> AuthenticateRequest(string token)
+        public async Task<UserAuthenicationResponse> AuthenticateRequest(string token)
         {
             using (var client = new HttpClient())
             {
@@ -16,10 +18,10 @@
                 var result = await client.GetAsync($"{_configuration.GetValue<string>("AuthenticationBaseUri")}{token}");
                 if (result.IsSuccessStatusCode)
                 {
-                    return true;
+                    return new UserAuthenicationResponse { IsAuthenticated = true, UserEmail = result.Content.ReadAsStringAsync().Result };
                 }
                 else
-                    return false;
+                    return new UserAuthenicationResponse { IsAuthenticated = false, UserEmail = string.Empty };
             }
         }
     }

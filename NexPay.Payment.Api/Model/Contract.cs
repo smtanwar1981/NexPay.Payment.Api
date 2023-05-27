@@ -36,5 +36,10 @@
         /// Gets or sets ContractStatus.
         /// </summary>
         public string? ContractStatus { get; set; }
+
+        /// <summary>
+        /// Gets or sets UserEmail.
+        /// </summary>
+        public string? UserEmail { get; set; }
     }
 }
